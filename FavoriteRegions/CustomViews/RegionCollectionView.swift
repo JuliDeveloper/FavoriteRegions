@@ -5,13 +5,16 @@ private let regionImageCellIdentifier = "regionImageCell"
 final class RegionCollectionView: UICollectionView {
     
     private var regions = [Region]()
+    
     private let params = GeometricParams(
-        cellCount: 2,
-        leftInset: 16,
-        rightInset: 16,
-        cellSpacing: 8
+        cellCount: Constants.ParamsCollectionView.cellCount,
+        leftInset: Constants.ParamsCollectionView.sideInset,
+        rightInset: Constants.ParamsCollectionView.sideInset,
+        cellSpacing: Constants.ParamsCollectionView.cellSpacing
     )
+    
     private var selectedIndexPath: IndexPath?
+    
     weak var navigateDelegate: RegionsListViewDelegate?
     
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
@@ -66,7 +69,7 @@ extension RegionCollectionView: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        UIEdgeInsets(top: 16, left: params.leftInset, bottom: 0, right: params.rightInset)
+        UIEdgeInsets(top: params.leftInset, left: params.leftInset, bottom: 0, right: params.rightInset)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -82,12 +85,12 @@ extension RegionCollectionView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if selectedIndexPath != nil {
             let cell = collectionView.cellForItem(at: selectedIndexPath ?? IndexPath())
-            cell?.layer.borderWidth = 0
+            cell?.layer.borderWidth = Constants.WidthBorder.deselected
         }
         
         selectedIndexPath = indexPath
         let cell = collectionView.cellForItem(at: indexPath)
-        cell?.layer.borderWidth = 4
+        cell?.layer.borderWidth = Constants.WidthBorder.selected
         cell?.layer.borderColor = UIColor.frPurpleColor.cgColor
         
         navigateDelegate?.navigateDetailsViewController()

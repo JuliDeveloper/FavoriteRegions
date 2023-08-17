@@ -17,16 +17,7 @@ final class RegionsListView: UIView {
     }()
     
     private var regions = [Region]()
-    
-    private let params = GeometricParams(
-        cellCount: 2,
-        leftInset: 16,
-        rightInset: 16,
-        cellSpacing: 8
-    )
-    
-    private var selectedIndexPath: IndexPath?
-    
+        
     weak var delegate: RegionsListViewControllerDelegate?
     
     func configure() {
@@ -54,7 +45,7 @@ extension RegionsListView: RegionsListViewDelegate {
     func updateCollectionView() {
         if let selectedIndexPath = collectionView.indexPathsForSelectedItems?.first {
             let cell = collectionView.cellForItem(at: selectedIndexPath)
-            cell?.layer.borderWidth = 0
+            cell?.layer.borderWidth = Constants.WidthBorder.deselected
         }
     }
     

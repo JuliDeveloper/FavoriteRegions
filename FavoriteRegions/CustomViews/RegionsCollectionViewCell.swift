@@ -35,7 +35,7 @@ final class RegionCollectionViewCell: UICollectionViewCell {
     
     func configure(_ isList: Bool) {
         backgroundColor = .frDarkGray
-        layer.cornerRadius = 16
+        layer.cornerRadius = Constants.Radius.cell
         
         if isList {
             addElements()
@@ -56,10 +56,22 @@ final class RegionCollectionViewCell: UICollectionViewCell {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            mainStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            mainStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            mainStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            mainStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
+            mainStackView.leadingAnchor.constraint(
+                equalTo: contentView.leadingAnchor,
+                constant: Constants.Constraints.cellConstraints
+            ),
+            mainStackView.topAnchor.constraint(
+                equalTo: contentView.topAnchor,
+                constant: Constants.Constraints.cellConstraints
+            ),
+            mainStackView.trailingAnchor.constraint(
+                equalTo: contentView.trailingAnchor,
+                constant: -Constants.Constraints.cellConstraints
+            ),
+            mainStackView.bottomAnchor.constraint(
+                equalTo: contentView.bottomAnchor,
+                constant: -Constants.Constraints.cellConstraints
+            ),
             
             regionTitleLabel.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor),
             regionTitleLabel.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor)
