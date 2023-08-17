@@ -2,6 +2,10 @@ import UIKit
 
 private let regionImageCellIdentifier = "regionImageCell"
 
+protocol RegionsListViewDelegate: AnyObject {
+    func updateCollectionView()
+}
+
 final class RegionsListView: UIView {
     
     private lazy var collectionView: UICollectionView = {
@@ -30,6 +34,8 @@ final class RegionsListView: UIView {
     )
     
     private var selectedIndexPath: IndexPath?
+    
+    weak var delegate: RegionsListViewControllerDelegate?
     
     func configure() {
         backgroundColor = .frBackgroundColor
@@ -101,5 +107,16 @@ extension RegionsListView: UICollectionViewDelegate {
         let cell = collectionView.cellForItem(at: indexPath)
         cell?.layer.borderWidth = 4
         cell?.layer.borderColor = UIColor.frPurpleColor.cgColor
+        
+        delegate?.navigateDetailsViewController()
+    }
+}
+
+extension RegionsListView: RegionsListViewDelegate {
+    func updateCollectionView() {
+        if let selectedIndexPath = collectionView.indexPathsForSelectedItems?.first {
+            let cell = collectionView.cellForItem(at: selectedIndexPath)
+            cell?.layer.borderWidth = 0
+        }
     }
 }
