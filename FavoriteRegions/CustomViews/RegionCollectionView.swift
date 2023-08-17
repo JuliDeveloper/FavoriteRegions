@@ -2,63 +2,45 @@ import UIKit
 
 private let regionImageCellIdentifier = "regionImageCell"
 
-protocol RegionsListViewDelegate: AnyObject {
-    func updateCollectionView()
-}
-
-final class RegionsListView: UIView {
-    
-    private lazy var collectionView: UICollectionView = {
-        let view = UICollectionView(
-            frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()
-        )
-        view.dataSource = self
-        view.delegate = self
-        view.register(
-            RegionCollectionViewCell.self,
-            forCellWithReuseIdentifier: regionImageCellIdentifier
-        )
-        view.backgroundColor = .clear
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.showsVerticalScrollIndicator = false
-        return view
-    }()
+final class RegionCollectionView: UICollectionView {
     
     private var regions = [Region]()
-    
     private let params = GeometricParams(
         cellCount: 2,
         leftInset: 16,
         rightInset: 16,
         cellSpacing: 8
     )
-    
     private var selectedIndexPath: IndexPath?
+    weak var navigateDelegate: RegionsListViewDelegate?
     
-    weak var delegate: RegionsListViewControllerDelegate?
+    override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
+        super.init(frame: frame, collectionViewLayout: layout)
+        setupCollectionView()
+    }
     
-    func configure() {
-        backgroundColor = .frBackgroundColor
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupCollectionView()
+    }
+    
+//    func updateRegions(_ newRegions: [Region]) {
+//        self.regions = newRegions
+//        reloadData()
+//    }
+    
+    private func setupCollectionView() {
+        register(RegionCollectionViewCell.self, forCellWithReuseIdentifier: regionImageCellIdentifier)
+        backgroundColor = .clear
+        translatesAutoresizingMaskIntoConstraints = false
+        showsVerticalScrollIndicator = false
         
-        addElements()
-        setupConstraints()
-    }
-    
-    func addElements() {
-        addSubview(collectionView)
-    }
-    
-    func setupConstraints() {
-        NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
+        dataSource = self
+        delegate = self
     }
 }
 
-extension RegionsListView: UICollectionViewDataSource {
+extension RegionCollectionView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         10
     }
@@ -69,13 +51,13 @@ extension RegionsListView: UICollectionViewDataSource {
         else { return UICollectionViewCell() }
         
         //let region = regions[indexPath.row]
-        cell.configure()
+        cell.configure(true)
         
         return cell
     }
 }
 
-extension RegionsListView: UICollectionViewDelegateFlowLayout {
+extension RegionCollectionView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let availableWidth = collectionView.frame.width - params.paddingWidth
         let cellWidth =  availableWidth / CGFloat(params.cellCount)
@@ -96,7 +78,7 @@ extension RegionsListView: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension RegionsListView: UICollectionViewDelegate {
+extension RegionCollectionView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if selectedIndexPath != nil {
             let cell = collectionView.cellForItem(at: selectedIndexPath ?? IndexPath())
@@ -108,15 +90,6 @@ extension RegionsListView: UICollectionViewDelegate {
         cell?.layer.borderWidth = 4
         cell?.layer.borderColor = UIColor.frPurpleColor.cgColor
         
-        delegate?.showDetailsViewController()
-    }
-}
-
-extension RegionsListView: RegionsListViewDelegate {
-    func updateCollectionView() {
-        if let selectedIndexPath = collectionView.indexPathsForSelectedItems?.first {
-            let cell = collectionView.cellForItem(at: selectedIndexPath)
-            cell?.layer.borderWidth = 0
-        }
+        navigateDelegate?.navigateDetailsViewController()
     }
 }

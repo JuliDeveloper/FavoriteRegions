@@ -33,12 +33,14 @@ final class RegionCollectionViewCell: UICollectionViewCell {
     
     private var isLike = false
     
-    func configure() {
+    func configure(_ isList: Bool) {
         backgroundColor = .frDarkGray
         layer.cornerRadius = 16
         
-        addElements()
-        setupConstraints()
+        if isList {
+            addElements()
+            setupConstraints()
+        }
     }
     
     private func addElements() {
