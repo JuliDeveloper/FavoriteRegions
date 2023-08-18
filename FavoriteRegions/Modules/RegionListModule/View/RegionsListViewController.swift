@@ -10,6 +10,8 @@ protocol RegionsListViewControllerProtocol: AnyObject {
 
 class RegionsListViewController: UIViewController, RegionsListViewControllerProtocol {
     
+    private var regions = [Region]()
+    
     var presenter: RegionsListPresenterProtocol?
     weak var delegate: RegionsListViewDelegate?
     
@@ -17,7 +19,7 @@ class RegionsListViewController: UIViewController, RegionsListViewControllerProt
         let customView = RegionsListView()
         customView.delegate = self
         delegate = customView
-        customView.configure()
+        customView.configure(regions)
         view = customView
     }
     
@@ -25,6 +27,11 @@ class RegionsListViewController: UIViewController, RegionsListViewControllerProt
         super.viewDidAppear(animated)
         delegate?.updateCollectionView()
         setupNavigationBar()
+    }
+    
+    override func viewDidLoad() {
+        presenter?.fetchRegions()
+        regions = presenter?.regionsList ?? []
     }
     
     override func viewWillDisappear(_ animated: Bool) {

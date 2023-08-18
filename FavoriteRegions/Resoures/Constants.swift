@@ -1,13 +1,9 @@
-//
-//  Constants.swift
-//  FavoriteRegions
-//
-//  Created by Julia Romanenko on 18.08.2023.
-//
-
 import UIKit
 
 struct Constants {
+    
+    static let url = "https://vmeste.wildberries.ru/api/guide-service/v1/getBrands"
+    
     struct ParamsCollectionView {
         static let cellCount = 2
         static let sideInset: CGFloat = 16

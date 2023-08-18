@@ -1,6 +1,13 @@
 import UIKit
 
+protocol DetailsRegionViewControllerProtocol: AnyObject {
+    
+}
+
 final class DetailsRegionViewController: UIViewController {
+    
+    var presenter: DetailsRegionPresenterProtocol?
+    
     override func loadView() {
         let customView = DetailsRegionView()
         customView.configure()

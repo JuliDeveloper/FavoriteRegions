@@ -22,8 +22,10 @@ final class RegionsListView: UIView {
         
     weak var delegate: RegionsListViewControllerDelegate?
     
-    func configure() {
+    func configure(_ regions: [Region]) {
         backgroundColor = .frBackgroundColor
+        
+        self.regions = regions
         
         addElements()
         setupConstraints()
