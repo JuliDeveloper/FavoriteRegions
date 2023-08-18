@@ -1,7 +1,5 @@
 import UIKit
 
-private let regionImageCellIdentifier = "regionImageCell"
-
 final class RegionCollectionView: UICollectionView {
     
     private var regions = [Region]()
@@ -33,7 +31,10 @@ final class RegionCollectionView: UICollectionView {
 //    }
     
     private func setupCollectionView() {
-        register(RegionCollectionViewCell.self, forCellWithReuseIdentifier: regionImageCellIdentifier)
+        register(
+            RegionCollectionViewCell.self,
+            forCellWithReuseIdentifier: Constants.Identifier.regionImageCellIdentifier
+        )
         backgroundColor = .clear
         translatesAutoresizingMaskIntoConstraints = false
         showsVerticalScrollIndicator = false
@@ -50,8 +51,13 @@ extension RegionCollectionView: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: regionImageCellIdentifier, for: indexPath) as? RegionCollectionViewCell
-        else { return UICollectionViewCell() }
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: Constants.Identifier.regionImageCellIdentifier,
+                for: indexPath
+            ) as? RegionCollectionViewCell
+        else {
+            return UICollectionViewCell()
+        }
         
         //let region = regions[indexPath.row]
         cell.configure(true)

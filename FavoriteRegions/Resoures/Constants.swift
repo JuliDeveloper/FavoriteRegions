@@ -26,4 +26,8 @@ struct Constants {
     struct Constraints {
         static let cellConstraints: CGFloat = 10
     }
+    
+    struct Identifier {
+        static let regionImageCellIdentifier = "regionImageCell"
+    }
 }
