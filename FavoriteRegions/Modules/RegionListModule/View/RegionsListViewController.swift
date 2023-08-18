@@ -21,14 +21,14 @@ class RegionsListViewController: UIViewController, RegionsListViewControllerProt
         view = customView
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupNavigationBar()
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         delegate?.updateCollectionView()
+        setupNavigationBar()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        title = ""
     }
     
     private func setupNavigationBar() {

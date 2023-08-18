@@ -11,7 +11,9 @@ final class RegionsListView: UIView {
     
     private lazy var collectionView: RegionCollectionView = {
         let layout = UICollectionViewFlowLayout()
-        let view = RegionCollectionView(frame: .zero, collectionViewLayout: layout)
+        let view = RegionCollectionView(
+            frame: .zero, collectionViewLayout: layout, isListVC: true
+        )
         view.navigateDelegate = self
         return view
     }()
