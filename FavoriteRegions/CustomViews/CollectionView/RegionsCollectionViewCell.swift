@@ -1,6 +1,14 @@
 import UIKit
+import Kingfisher
 
 final class RegionCollectionViewCell: UICollectionViewCell {
+    
+    private let regionImageView: UIImageView = {
+        let view = UIImageView()
+        view.contentMode = .center
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
 
     private let mainStackView: UIStackView = {
         let stack = UIStackView()
@@ -27,17 +35,61 @@ final class RegionCollectionViewCell: UICollectionViewCell {
     private var isLike = false
     
     func configure(_ region: Region, _ isListVC: Bool) {
-        backgroundColor = .frDarkGray
-        layer.cornerRadius = Constants.Radius.cell
+        setCellConfig()
         
         regionTitleLabel.text = region.title
         
         likeButton.addTarget(self, action: #selector(changeIsLike), for: .touchUpInside)
-
-        if isListVC {
-            addElements()
-            setupConstraints()
+        
+        defaultUIConfig()
+        setImage(region.thumbUrls[0])
+        
+        addElements()
+        setupConstraints()
+        
+    }
+    
+    func configure(_ image: String) {
+        setCellConfig()
+        
+        defaultUIConfig()
+        setImage(image)
+    }
+    
+    private func setCellConfig() {
+        backgroundColor = .frDarkGray
+        layer.cornerRadius = Constants.Radius.cell
+        clipsToBounds = true
+    }
+    
+    private func defaultUIConfig() {
+        contentView.addSubview(regionImageView)
+        NSLayoutConstraint.activate([
+            regionImageView.leadingAnchor.constraint(
+                equalTo: contentView.leadingAnchor
+            ),
+            regionImageView.topAnchor.constraint(
+                equalTo: contentView.topAnchor
+            ),
+            regionImageView.trailingAnchor.constraint(
+                equalTo: contentView.trailingAnchor
+            ),
+            regionImageView.bottomAnchor.constraint(
+                equalTo: contentView.bottomAnchor
+            )
+        ])
+    }
+    
+    private func setImage(_ imageUrl: String) {
+        guard
+            let url = URL(string: imageUrl)
+        else {
+            return
         }
+        
+        regionImageView.kf.setImage(
+            with: url
+        )
     }
     
     private func addElements() {

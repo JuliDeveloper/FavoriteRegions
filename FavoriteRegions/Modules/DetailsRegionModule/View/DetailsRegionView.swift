@@ -61,8 +61,12 @@ final class DetailsRegionView: UIView {
     
     private var isLike = false
     
-    func configure() {
+    func configure(_ region: Region) {
+        collectionView.selectedRegionImages = region.thumbUrls
+        
         backgroundColor = .frBackgroundColor
+        
+        viewsLabel.text = "\(region.viewsCount)"
         
         likeButton.addTarget(self, action: #selector(changeIsLike), for: .touchUpInside)
         

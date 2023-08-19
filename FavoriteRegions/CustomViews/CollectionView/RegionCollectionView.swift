@@ -12,7 +12,13 @@ final class RegionCollectionView: UICollectionView {
     private var isListVC: Bool
     private var selectedIndexPath: IndexPath?
     
-    var regions: [Region] = [] {
+    var allRegions: [Region] = [] {
+        didSet {
+            reloadData()
+        }
+    }
+
+    var selectedRegionImages: [String] = [] {
         didSet {
             reloadData()
         }
@@ -46,7 +52,7 @@ final class RegionCollectionView: UICollectionView {
 
 extension RegionCollectionView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        regions.count
+        isListVC ? allRegions.count : selectedRegionImages.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -59,8 +65,13 @@ extension RegionCollectionView: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        let region = regions[indexPath.row]
-        cell.configure(region,isListVC)
+        if isListVC {
+            let region = allRegions[indexPath.row]
+            cell.configure(region, isListVC)
+        } else {
+            let image = selectedRegionImages[indexPath.row]
+            cell.configure(image)
+        }
         
         return cell
     }
@@ -98,8 +109,10 @@ extension RegionCollectionView: UICollectionViewDelegate {
         let cell = collectionView.cellForItem(at: indexPath)
         cell?.layer.borderWidth = Constants.WidthBorder.selected
         cell?.layer.borderColor = UIColor.frPurpleColor.cgColor
-        let currentRegion = regions[indexPath.row]
         
-        navigateDelegate?.navigateDetailsViewController(currentRegion)
+        if isListVC {
+            let currentRegion = allRegions[indexPath.row]
+            navigateDelegate?.navigateDetailsViewController(currentRegion)
+        }
     }
 }

@@ -21,7 +21,7 @@ final class RegionsListView: UIView {
     
     var regions: [Region] = [] {
         didSet {
-            collectionView.regions = regions
+            collectionView.allRegions = regions
         }
     }
         

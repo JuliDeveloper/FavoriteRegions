@@ -11,7 +11,9 @@ final class DetailsRegionViewController: UIViewController {
     
     override func loadView() {
         let customView = DetailsRegionView()
-        customView.configure()
+        if let region {
+            customView.configure(region)
+        }
         view = customView
     }
     
@@ -24,7 +26,8 @@ final class DetailsRegionViewController: UIViewController {
     }
     
     private func setupNavBar() {
-        title = "Название региона"
+        let regionTitle = region?.title ?? ""
+        title = "\(regionTitle)"
         navigationController?.navigationBar.prefersLargeTitles = false
 
         let backButton = UIBarButtonItem(image: UIImage(named: "chevron.left"), style: .done, target: self, action: #selector(backToCollection))

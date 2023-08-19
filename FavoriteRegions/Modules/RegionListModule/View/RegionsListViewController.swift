@@ -9,7 +9,7 @@ protocol RegionsListViewControllerProtocol: AnyObject {
     func updateRegions(_ regions: [Region])
 }
 
-class RegionsListViewController: UIViewController, RegionsListViewControllerProtocol {
+class RegionsListViewController: UIViewController {
     
     private let customView = RegionsListView()
 
@@ -51,7 +51,7 @@ class RegionsListViewController: UIViewController, RegionsListViewControllerProt
     }
 }
 
-extension RegionsListViewController {
+extension RegionsListViewController: RegionsListViewControllerProtocol {
     func showDetailsViewController(_ region: Region) {
         let detailsVC = DetailsRegionViewController()
         detailsVC.region = region
