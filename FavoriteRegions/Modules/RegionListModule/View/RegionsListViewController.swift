@@ -2,6 +2,7 @@ import UIKit
 
 protocol RegionsListViewControllerDelegate: AnyObject {
     func navigateDetailsViewController(_ region: Region)
+    func reloadFetchRegions()
 }
 
 protocol RegionsListViewControllerProtocol: AnyObject {
@@ -9,6 +10,7 @@ protocol RegionsListViewControllerProtocol: AnyObject {
     func updateRegions(_ regions: [Region])
     func startLoading()
     func stopLoading()
+    func stopRefreshing()
 }
 
 class RegionsListViewController: UIViewController {
@@ -39,8 +41,7 @@ class RegionsListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter?.fetchRegions()
-        regions = presenter?.regionsList ?? []
+        fetchData()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -50,6 +51,11 @@ class RegionsListViewController: UIViewController {
     private func setupNavigationBar() {
         title = "Любимые регионы"
         navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    
+    private func fetchData() {
+        presenter?.fetchRegions()
+        regions = presenter?.regionsList ?? []
     }
 }
 
@@ -72,10 +78,18 @@ extension RegionsListViewController: RegionsListViewControllerProtocol {
     func stopLoading() {
         delegate?.stopActivityIndicator()
     }
+    
+    func stopRefreshing() {
+        delegate?.stopRefreshControl()
+    }
 }
 
 extension RegionsListViewController: RegionsListViewControllerDelegate {
     func navigateDetailsViewController(_ region: Region) {
         presenter?.didSelectItem(region)
+    }
+    
+    func reloadFetchRegions() {
+        fetchData()
     }
 }

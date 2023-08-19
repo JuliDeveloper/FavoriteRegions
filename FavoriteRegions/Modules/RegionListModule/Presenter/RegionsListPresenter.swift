@@ -42,7 +42,9 @@ extension RegionsListPresenter: RegionsListPresenterProtocol {
                     self?.regions = regions
                     self?.view?.updateRegions(regions)
                     self?.view?.stopLoading()
+                    self?.view?.stopRefreshing()
                 case .failure(let error):
+                    // Добавить показ алерта
                     print(error)
                 }
             }

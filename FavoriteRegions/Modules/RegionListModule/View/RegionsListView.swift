@@ -8,6 +8,7 @@ protocol RegionsListViewDelegate: AnyObject {
     func navigateDetailsViewController(_ region: Region)
     func startActivityIndicator()
     func stopActivityIndicator()
+    func stopRefreshControl()
 }
 
 final class RegionsListView: UIView {
@@ -19,12 +20,19 @@ final class RegionsListView: UIView {
         return indicator
     }()
     
+    private lazy var refreshControl: UIRefreshControl = {
+        let control = UIRefreshControl()
+        control.addTarget(self, action: #selector(refreshWeatherData), for: .valueChanged)
+        return control
+    }()
+    
     private lazy var collectionView: RegionCollectionView = {
         let layout = UICollectionViewFlowLayout()
         let view = RegionCollectionView(
             frame: .zero, collectionViewLayout: layout, isListVC: true
         )
         view.navigateDelegate = self
+        view.refreshControl = refreshControl
         return view
     }()
     
@@ -66,6 +74,10 @@ final class RegionsListView: UIView {
             collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
+    
+    @objc private func refreshWeatherData() {
+        delegate?.reloadFetchRegions()
+    }
 }
 
 extension RegionsListView: RegionsListViewDelegate {
@@ -90,5 +102,9 @@ extension RegionsListView: RegionsListViewDelegate {
     
     func stopActivityIndicator() {
         activeIndicator.stopAnimating()
+    }
+    
+    func stopRefreshControl() {
+        refreshControl.endRefreshing()
     }
 }
