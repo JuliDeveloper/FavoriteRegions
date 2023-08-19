@@ -26,9 +26,11 @@ final class RegionCollectionViewCell: UICollectionViewCell {
     
     private var isLike = false
     
-    func configure(_ isListVC: Bool) {
+    func configure(_ region: Region, _ isListVC: Bool) {
         backgroundColor = .frDarkGray
         layer.cornerRadius = Constants.Radius.cell
+        
+        regionTitleLabel.text = region.title
         
         likeButton.addTarget(self, action: #selector(changeIsLike), for: .touchUpInside)
 

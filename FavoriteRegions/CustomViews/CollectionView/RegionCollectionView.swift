@@ -2,8 +2,6 @@ import UIKit
 
 final class RegionCollectionView: UICollectionView {
     
-    private var regions = [Region]()
-    
     private let params = GeometricParams(
         cellCount: Constants.ParamsCollectionView.cellCount,
         leftInset: Constants.ParamsCollectionView.sideInset,
@@ -14,6 +12,12 @@ final class RegionCollectionView: UICollectionView {
     private var isListVC: Bool
     private var selectedIndexPath: IndexPath?
     
+    var regions: [Region] = [] {
+        didSet {
+            reloadData()
+        }
+    }
+        
     weak var navigateDelegate: RegionsListViewDelegate?
     
     init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, isListVC: Bool) {
@@ -25,11 +29,6 @@ final class RegionCollectionView: UICollectionView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-//    func updateRegions(_ newRegions: [Region]) {
-//        self.regions = newRegions
-//        reloadData()
-//    }
     
     private func setupCollectionView() {
         register(
@@ -47,7 +46,7 @@ final class RegionCollectionView: UICollectionView {
 
 extension RegionCollectionView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        10
+        regions.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -60,8 +59,8 @@ extension RegionCollectionView: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        //let region = regions[indexPath.row]
-        cell.configure(isListVC)
+        let region = regions[indexPath.row]
+        cell.configure(region,isListVC)
         
         return cell
     }
@@ -99,7 +98,8 @@ extension RegionCollectionView: UICollectionViewDelegate {
         let cell = collectionView.cellForItem(at: indexPath)
         cell?.layer.borderWidth = Constants.WidthBorder.selected
         cell?.layer.borderColor = UIColor.frPurpleColor.cgColor
+        let currentRegion = regions[indexPath.row]
         
-        navigateDelegate?.navigateDetailsViewController()
+        navigateDelegate?.navigateDetailsViewController(currentRegion)
     }
 }

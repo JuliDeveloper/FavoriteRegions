@@ -6,6 +6,7 @@ protocol DetailsRegionViewControllerProtocol: AnyObject {
 
 final class DetailsRegionViewController: UIViewController {
     
+    var region: Region?
     var presenter: DetailsRegionPresenterProtocol?
     
     override func loadView() {

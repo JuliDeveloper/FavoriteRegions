@@ -3,8 +3,9 @@ import UIKit
 private let regionImageCellIdentifier = "regionImageCell"
 
 protocol RegionsListViewDelegate: AnyObject {
+    func reloadCollectionView()
     func updateCollectionView()
-    func navigateDetailsViewController()
+    func navigateDetailsViewController(_ region: Region)
 }
 
 final class RegionsListView: UIView {
@@ -18,24 +19,34 @@ final class RegionsListView: UIView {
         return view
     }()
     
-    private var regions = [Region]()
+    var regions: [Region] = [] {
+        didSet {
+            collectionView.regions = regions
+        }
+    }
         
     weak var delegate: RegionsListViewControllerDelegate?
     
-    func configure(_ regions: [Region]) {
-        backgroundColor = .frBackgroundColor
-        
-        self.regions = regions
-        
+    init() {
+        super.init(frame: .zero)
         addElements()
         setupConstraints()
     }
     
-    func addElements() {
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure() {
+        backgroundColor = .frBackgroundColor
+        //showScenario()
+    }
+    
+    private func addElements() {
         addSubview(collectionView)
     }
     
-    func setupConstraints() {
+    private func setupConstraints() {
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
@@ -43,9 +54,21 @@ final class RegionsListView: UIView {
             collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
+    
+    private func showScenario() {
+        if regions.isEmpty {
+            collectionView.layer.opacity = 0
+        } else {
+            collectionView.layer.opacity = 1
+        }
+    }
 }
 
 extension RegionsListView: RegionsListViewDelegate {
+    func reloadCollectionView() {
+        collectionView.reloadData()
+    }
+    
     func updateCollectionView() {
         if let selectedIndexPath = collectionView.indexPathsForSelectedItems?.first {
             let cell = collectionView.cellForItem(at: selectedIndexPath)
@@ -53,7 +76,7 @@ extension RegionsListView: RegionsListViewDelegate {
         }
     }
     
-    func navigateDetailsViewController() {
-        delegate?.navigateDetailsViewController()
+    func navigateDetailsViewController(_ region: Region) {
+        delegate?.navigateDetailsViewController(region)
     }
 }

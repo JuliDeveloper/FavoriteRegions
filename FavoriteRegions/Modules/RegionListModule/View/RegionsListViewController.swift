@@ -1,25 +1,31 @@
 import UIKit
 
 protocol RegionsListViewControllerDelegate: AnyObject {
-    func navigateDetailsViewController()
+    func navigateDetailsViewController(_ region: Region)
 }
 
 protocol RegionsListViewControllerProtocol: AnyObject {
-    func showDetailsViewController()
+    func showDetailsViewController(_ region: Region)
+    func updateRegions(_ regions: [Region])
 }
 
 class RegionsListViewController: UIViewController, RegionsListViewControllerProtocol {
     
-    private var regions = [Region]()
+    private let customView = RegionsListView()
+
+    private var regions = [Region]() {
+        didSet {
+            delegate?.reloadCollectionView()
+        }
+    }
     
     var presenter: RegionsListPresenterProtocol?
     weak var delegate: RegionsListViewDelegate?
     
     override func loadView() {
-        let customView = RegionsListView()
         customView.delegate = self
         delegate = customView
-        customView.configure(regions)
+        customView.configure()
         view = customView
     }
     
@@ -30,6 +36,7 @@ class RegionsListViewController: UIViewController, RegionsListViewControllerProt
     }
     
     override func viewDidLoad() {
+        super.viewDidLoad()
         presenter?.fetchRegions()
         regions = presenter?.regionsList ?? []
     }
@@ -45,14 +52,20 @@ class RegionsListViewController: UIViewController, RegionsListViewControllerProt
 }
 
 extension RegionsListViewController {
-    func showDetailsViewController() {
+    func showDetailsViewController(_ region: Region) {
         let detailsVC = DetailsRegionViewController()
+        detailsVC.region = region
         navigationController?.pushViewController(detailsVC, animated: true)
     }
 }
 
 extension RegionsListViewController: RegionsListViewControllerDelegate {
-    func navigateDetailsViewController() {
-        presenter?.didSelectItem()
+    func navigateDetailsViewController(_ region: Region) {
+        presenter?.didSelectItem(region)
+    }
+    
+    func updateRegions(_ regions: [Region]) {
+        self.regions = regions
+        customView.regions = regions
     }
 }

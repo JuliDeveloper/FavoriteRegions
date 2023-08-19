@@ -9,7 +9,7 @@ import Foundation
 
 protocol RegionsListPresenterProtocol {
     var regionsList: [Region] { get }
-    func didSelectItem()
+    func didSelectItem(_ region: Region)
     func fetchRegions()
 }
 
@@ -29,16 +29,17 @@ extension RegionsListPresenter: RegionsListPresenterProtocol {
         regions
     }
     
-    func didSelectItem() {
-        view?.showDetailsViewController()
+    func didSelectItem(_ region: Region) {
+        view?.showDetailsViewController(region)
     }
     
     func fetchRegions() {
         regionLoader.loadRegion { result in
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
                 switch result {
                 case .success(let regions):
-                    self.regions = regions
+                    self?.regions = regions
+                    self?.view?.updateRegions(regions)
                 case .failure(let error):
                     print(error)
                 }
