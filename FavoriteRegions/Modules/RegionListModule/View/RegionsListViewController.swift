@@ -11,6 +11,7 @@ protocol RegionsListViewControllerProtocol: AnyObject {
     func startLoading()
     func stopLoading()
     func stopRefreshing()
+    func showAlert()
 }
 
 class RegionsListViewController: UIViewController {
@@ -81,6 +82,12 @@ extension RegionsListViewController: RegionsListViewControllerProtocol {
     
     func stopRefreshing() {
         delegate?.stopRefreshControl()
+    }
+    
+    func showAlert() {
+        showAlert { [weak self] _ in
+            self?.fetchData()
+        }
     }
 }
 

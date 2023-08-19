@@ -12,7 +12,8 @@ final class NetworkClient {
 
 extension NetworkClient: NetworkClientProtocol {
     func fetch(url: URL, handler: @escaping (Result<Data, Error>) -> Void) {
-        let request = URLRequest(url: url)
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 15.0
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {

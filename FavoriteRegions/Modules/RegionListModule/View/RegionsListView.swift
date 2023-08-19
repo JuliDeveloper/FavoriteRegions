@@ -1,7 +1,5 @@
 import UIKit
 
-private let regionImageCellIdentifier = "regionImageCell"
-
 protocol RegionsListViewDelegate: AnyObject {
     func reloadCollectionView()
     func updateCollectionView()

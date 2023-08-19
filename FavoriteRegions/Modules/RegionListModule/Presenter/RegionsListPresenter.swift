@@ -1,10 +1,3 @@
-//
-//  RegionsListPresenter.swift
-//  FavoriteRegions
-//
-//  Created by Julia Romanenko on 18.08.2023.
-//
-
 import Foundation
 
 protocol RegionsListPresenterProtocol {
@@ -43,9 +36,8 @@ extension RegionsListPresenter: RegionsListPresenterProtocol {
                     self?.view?.updateRegions(regions)
                     self?.view?.stopLoading()
                     self?.view?.stopRefreshing()
-                case .failure(let error):
-                    // Добавить показ алерта
-                    print(error)
+                case .failure(_):
+                    self?.view?.showAlert()
                 }
             }
         }
