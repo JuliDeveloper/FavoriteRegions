@@ -131,7 +131,8 @@ final class RegionCollectionViewCell: UICollectionViewCell {
         }
         
         regionImageView.kf.setImage(
-            with: url
+            with: url,
+            placeholder: UIImage(named: "placeholder")
         )
     }
     
