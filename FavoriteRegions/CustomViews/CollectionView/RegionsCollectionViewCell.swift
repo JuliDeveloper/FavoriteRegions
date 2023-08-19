@@ -32,7 +32,25 @@ final class RegionCollectionViewCell: UICollectionViewCell {
     
     private let likeButton = LikeButton()
     
+    private let gradientView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let gradient = CAGradientLayer()
+    
     private var isLike = false
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        gradient.frame = gradientView.bounds
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        gradient.removeFromSuperlayer()
+    }
     
     func configure(_ region: Region, _ isListVC: Bool) {
         setCellConfig()
@@ -46,7 +64,7 @@ final class RegionCollectionViewCell: UICollectionViewCell {
         
         addElements()
         setupConstraints()
-        
+        setupGradient()
     }
     
     func configure(_ image: String) {
@@ -64,6 +82,8 @@ final class RegionCollectionViewCell: UICollectionViewCell {
     
     private func defaultUIConfig() {
         contentView.addSubview(regionImageView)
+        contentView.addSubview(gradientView)
+                
         NSLayoutConstraint.activate([
             regionImageView.leadingAnchor.constraint(
                 equalTo: contentView.leadingAnchor
@@ -76,8 +96,31 @@ final class RegionCollectionViewCell: UICollectionViewCell {
             ),
             regionImageView.bottomAnchor.constraint(
                 equalTo: contentView.bottomAnchor
+            ),
+            
+            gradientView.heightAnchor.constraint(
+                equalToConstant: 50
+            ),
+            gradientView.leadingAnchor.constraint(
+                equalTo: contentView.leadingAnchor
+            ),
+            gradientView.trailingAnchor.constraint(
+                equalTo: contentView.trailingAnchor
+            ),
+            gradientView.bottomAnchor.constraint(
+                equalTo: contentView.bottomAnchor
             )
         ])
+        
+        gradientView.layer.setNeedsLayout()
+        self.layoutIfNeeded()
+    }
+    
+    private func setupGradient() {
+        gradient.frame = gradientView.bounds
+        gradient.colors = [UIColor.frBackgroundColor.withAlphaComponent(0).cgColor,
+                           UIColor.frBackgroundColor.withAlphaComponent(0.5).cgColor]
+        gradientView.layer.insertSublayer(gradient, at: 1)
     }
     
     private func setImage(_ imageUrl: String) {
