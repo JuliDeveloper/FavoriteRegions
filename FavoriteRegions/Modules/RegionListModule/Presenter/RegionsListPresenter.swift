@@ -34,12 +34,14 @@ extension RegionsListPresenter: RegionsListPresenterProtocol {
     }
     
     func fetchRegions() {
-        regionLoader.loadRegion { result in
-            DispatchQueue.main.async { [weak self] in
+        view?.startLoading()
+        regionLoader.loadRegion { [weak self] result in
+            DispatchQueue.main.async {
                 switch result {
                 case .success(let regions):
                     self?.regions = regions
                     self?.view?.updateRegions(regions)
+                    self?.view?.stopLoading()
                 case .failure(let error):
                     print(error)
                 }

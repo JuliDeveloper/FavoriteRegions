@@ -6,9 +6,18 @@ protocol RegionsListViewDelegate: AnyObject {
     func reloadCollectionView()
     func updateCollectionView()
     func navigateDetailsViewController(_ region: Region)
+    func startActivityIndicator()
+    func stopActivityIndicator()
 }
 
 final class RegionsListView: UIView {
+    
+    private let activeIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.hidesWhenStopped = true
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
     
     private lazy var collectionView: RegionCollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -39,28 +48,23 @@ final class RegionsListView: UIView {
     
     func configure() {
         backgroundColor = .frBackgroundColor
-        //showScenario()
     }
     
     private func addElements() {
+        addSubview(activeIndicator)
         addSubview(collectionView)
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
+            activeIndicator.centerXAnchor.constraint(equalTo: centerXAnchor),
+            activeIndicator.centerYAnchor.constraint(equalTo: centerYAnchor),
+            
             collectionView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
-    }
-    
-    private func showScenario() {
-        if regions.isEmpty {
-            collectionView.layer.opacity = 0
-        } else {
-            collectionView.layer.opacity = 1
-        }
     }
 }
 
@@ -78,5 +82,13 @@ extension RegionsListView: RegionsListViewDelegate {
     
     func navigateDetailsViewController(_ region: Region) {
         delegate?.navigateDetailsViewController(region)
+    }
+    
+    func startActivityIndicator() {
+        activeIndicator.startAnimating()
+    }
+    
+    func stopActivityIndicator() {
+        activeIndicator.stopAnimating()
     }
 }

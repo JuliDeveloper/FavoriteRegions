@@ -7,6 +7,8 @@ protocol RegionsListViewControllerDelegate: AnyObject {
 protocol RegionsListViewControllerProtocol: AnyObject {
     func showDetailsViewController(_ region: Region)
     func updateRegions(_ regions: [Region])
+    func startLoading()
+    func stopLoading()
 }
 
 class RegionsListViewController: UIViewController {
@@ -57,15 +59,23 @@ extension RegionsListViewController: RegionsListViewControllerProtocol {
         detailsVC.region = region
         navigationController?.pushViewController(detailsVC, animated: true)
     }
+    
+    func updateRegions(_ regions: [Region]) {
+        self.regions = regions
+        customView.regions = regions
+    }
+    
+    func startLoading() {
+        delegate?.startActivityIndicator()
+    }
+    
+    func stopLoading() {
+        delegate?.stopActivityIndicator()
+    }
 }
 
 extension RegionsListViewController: RegionsListViewControllerDelegate {
     func navigateDetailsViewController(_ region: Region) {
         presenter?.didSelectItem(region)
-    }
-    
-    func updateRegions(_ regions: [Region]) {
-        self.regions = regions
-        customView.regions = regions
     }
 }
