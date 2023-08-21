@@ -31,7 +31,7 @@ class RegionsListViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+        super.viewWillAppear(animated)
         setupNavigationBar()
     }
     
