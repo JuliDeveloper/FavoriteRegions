@@ -39,8 +39,8 @@ final class RegionCollectionViewCell: UICollectionViewCell {
     }()
     
     private let gradient = CAGradientLayer()
-    
-    private var isLike = false
+        
+    var likeButtonTapped: (() -> Void)?
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -72,6 +72,14 @@ final class RegionCollectionViewCell: UICollectionViewCell {
         
         defaultUIConfig()
         setImage(image)
+    }
+    
+    func setLikeState() {
+        likeButton.setImage(UIImage(named: "activeIsLike"), for: .normal)
+    }
+    
+    func setUnlikeState() {
+        likeButton.setImage(UIImage(named: "noActiveIsLike"), for: .normal)
     }
     
     private func setCellConfig() {
@@ -172,12 +180,6 @@ final class RegionCollectionViewCell: UICollectionViewCell {
     }
     
     @objc private func changeIsLike() {
-        isLike.toggle()
-        
-        if isLike {
-            likeButton.setImage(UIImage(named: "activeIsLike"), for: .normal)
-        } else {
-            likeButton.setImage(UIImage(named: "noActiveIsLike"), for: .normal)
-        }
+        likeButtonTapped?()
     }
 }

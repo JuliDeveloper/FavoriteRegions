@@ -2,18 +2,26 @@ import Foundation
 
 protocol RegionsListPresenterProtocol {
     var regionsList: [Region] { get }
-    func didSelectItem(_ region: Region)
+    func didSelectItem(_ region: Region, _ currentIndexPath: IndexPath?, _ isLike: Bool)
     func fetchRegions()
+    func addLike(_ index: Int)
+    func deleteLike(_ index: Int)
+    func setLike(_ index: Int) -> Bool
 }
 
 final class RegionsListPresenter {
     private let regionLoader: RegionsLoaderProtocol
+    private let likesManager: LikesManagerProtocol
     private var regions = [Region]()
     
     weak var view: RegionsListViewControllerProtocol?
     
-    init(regionLoader: RegionsLoaderProtocol = RegionsLoader()) {
+    init(
+        regionLoader: RegionsLoaderProtocol = RegionsLoader(),
+        likesManager: LikesManagerProtocol = LikesManager.shared
+    ) {
         self.regionLoader = regionLoader
+        self.likesManager = likesManager
     }
 }
 
@@ -22,8 +30,8 @@ extension RegionsListPresenter: RegionsListPresenterProtocol {
         regions
     }
     
-    func didSelectItem(_ region: Region) {
-        view?.showDetailsViewController(region)
+    func didSelectItem(_ region: Region, _ currentIndexPath: IndexPath?, _ isLike: Bool) {
+        view?.showDetailsViewController(region, currentIndexPath, isLike)
     }
     
     func fetchRegions() {
@@ -41,5 +49,17 @@ extension RegionsListPresenter: RegionsListPresenterProtocol {
                 }
             }
         }
+    }
+    
+    func addLike(_ index: Int) {
+        likesManager.addLike(index)
+    }
+    
+    func deleteLike(_ index: Int) {
+        likesManager.deleteLike(index)
+    }
+    
+    func setLike(_ index: Int) -> Bool {
+        likesManager.isLike(index)
     }
 }

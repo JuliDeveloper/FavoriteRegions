@@ -1,12 +1,16 @@
 import UIKit
 
 protocol RegionsListViewControllerDelegate: AnyObject {
-    func navigateDetailsViewController(_ region: Region)
+    func navigateDetailsViewController(_ region: Region, _ currentIndexPath: IndexPath?, _ isLike: Bool)
     func reloadFetchRegions()
+    func addLike(_ index: Int)
+    func deleteLike(_ index: Int)
+    func isLike(_ index: Int) -> Bool
+    func didChangeLikeStatus(_ index: Int, _ isLiked: Bool)
 }
 
 protocol RegionsListViewControllerProtocol: AnyObject {
-    func showDetailsViewController(_ region: Region)
+    func showDetailsViewController(_ region: Region, _ currentIndexPath: IndexPath?, _ isLike: Bool)
     func updateRegions(_ regions: [Region])
     func startLoading()
     func stopLoading()
@@ -61,9 +65,12 @@ class RegionsListViewController: UIViewController {
 }
 
 extension RegionsListViewController: RegionsListViewControllerProtocol {
-    func showDetailsViewController(_ region: Region) {
+    func showDetailsViewController(_ region: Region, _  currentIndexPath: IndexPath?, _ isLike: Bool) {
         let detailsVC = DetailsRegionViewController()
+        detailsVC.delegate = self
         detailsVC.region = region
+        detailsVC.indexPath = currentIndexPath
+        detailsVC.isLike = isLike
         navigationController?.pushViewController(detailsVC, animated: true)
     }
     
@@ -92,11 +99,28 @@ extension RegionsListViewController: RegionsListViewControllerProtocol {
 }
 
 extension RegionsListViewController: RegionsListViewControllerDelegate {
-    func navigateDetailsViewController(_ region: Region) {
-        presenter?.didSelectItem(region)
+    func navigateDetailsViewController(_ region: Region, _ currentIndexPath: IndexPath?, _ isLike: Bool) {
+        presenter?.didSelectItem(region, currentIndexPath, isLike)
     }
     
     func reloadFetchRegions() {
         fetchData()
+    }
+    
+    func addLike(_ index: Int) {
+        presenter?.addLike(index)
+    }
+    
+    func deleteLike(_ index: Int) {
+        presenter?.deleteLike(index)
+    }
+    
+    func isLike(_ index: Int) -> Bool {
+        guard let result = presenter?.setLike(index) else { return false }
+        return result
+    }
+    
+    func didChangeLikeStatus(_ index: Int, _ isLiked: Bool) {
+        delegate?.didChangeLikeStatus(index, isLiked)
     }
 }

@@ -3,10 +3,14 @@ import UIKit
 protocol RegionsListViewDelegate: AnyObject {
     func reloadCollectionView()
     func updateCollectionView()
-    func navigateDetailsViewController(_ region: Region)
+    func navigateDetailsViewController(_ region: Region, _  currentIndexPath: IndexPath?, _ isLike: Bool)
     func startActivityIndicator()
     func stopActivityIndicator()
     func stopRefreshControl()
+    func addLike(_ index: Int)
+    func deleteLike(_ index: Int)
+    func isLike(_ index: Int) -> Bool
+    func didChangeLikeStatus(_ index: Int, _ isLiked: Bool)
 }
 
 final class RegionsListView: UIView {
@@ -87,11 +91,12 @@ extension RegionsListView: RegionsListViewDelegate {
         if let selectedIndexPath = collectionView.indexPathsForSelectedItems?.first {
             let cell = collectionView.cellForItem(at: selectedIndexPath)
             cell?.layer.borderWidth = Constants.WidthBorder.deselected
+            collectionView.reloadItems(at: [selectedIndexPath])
         }
     }
     
-    func navigateDetailsViewController(_ region: Region) {
-        delegate?.navigateDetailsViewController(region)
+    func navigateDetailsViewController(_ region: Region, _ currentIndexPath: IndexPath?, _ isLike: Bool) {
+        delegate?.navigateDetailsViewController(region, currentIndexPath, isLike)
     }
     
     func startActivityIndicator() {
@@ -104,5 +109,27 @@ extension RegionsListView: RegionsListViewDelegate {
     
     func stopRefreshControl() {
         refreshControl.endRefreshing()
+    }
+    
+    func addLike(_ index: Int) {
+        delegate?.addLike(index)
+    }
+    
+    func deleteLike(_ index: Int) {
+        delegate?.deleteLike(index)
+    }
+    
+    func isLike(_ index: Int) -> Bool {
+        guard let result = delegate?.isLike(index) else { return false }
+        return result
+    }
+    
+    func didChangeLikeStatus(_ index: Int, _ isLiked: Bool) {
+        if isLiked {
+            deleteLike(index)
+        } else {
+            addLike(index)
+        }
+        updateCollectionView()
     }
 }

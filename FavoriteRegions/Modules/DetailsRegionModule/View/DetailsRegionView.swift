@@ -59,9 +59,9 @@ final class DetailsRegionView: UIView {
         return view
     }()
     
-    private var isLike = false
+    var likeButtonTapped: (() -> Void)?
     
-    func configure(_ region: Region) {
+    func configure(_ region: Region, _ isLike: Bool) {
         collectionView.selectedRegionImages = region.thumbUrls
         
         backgroundColor = .frBackgroundColor
@@ -70,9 +70,25 @@ final class DetailsRegionView: UIView {
         
         likeButton.addTarget(self, action: #selector(changeIsLike), for: .touchUpInside)
         
+        if isLike {
+            likeButton.setImage(UIImage(named: "activeIsLike"), for: .normal)
+        } else {
+            likeButton.setImage(UIImage(named: "noActiveIsLike"), for: .normal)
+        }
+        
         addElements()
         setupConstraints()
     }
+    
+    func setLikeState() {
+        likeButton.setImage(UIImage(named: "activeIsLike"), for: .normal)
+        
+    }
+    
+    func setUnlikeState() {
+        likeButton.setImage(UIImage(named: "noActiveIsLike"), for: .normal)
+    }
+    
     
     private func addElements() {
         addSubview(generalStack)
@@ -103,12 +119,6 @@ final class DetailsRegionView: UIView {
     }
     
     @objc private func changeIsLike() {
-        isLike.toggle()
-        
-        if isLike {
-            likeButton.setImage(UIImage(named: "activeIsLike"), for: .normal)
-        } else {
-            likeButton.setImage(UIImage(named: "noActiveIsLike"), for: .normal)
-        }
+        likeButtonTapped?()
     }
 }

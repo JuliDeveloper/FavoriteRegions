@@ -68,6 +68,26 @@ extension RegionCollectionView: UICollectionViewDataSource {
         if isListVC {
             let region = allRegions[indexPath.row]
             cell.configure(region, isListVC)
+            
+            let isLike = navigateDelegate?.isLike(indexPath.row) ?? false
+            
+            if isLike {
+                cell.setLikeState()
+            } else {
+                cell.setUnlikeState()
+            }
+            
+            cell.likeButtonTapped = { [weak self] in
+                let currentIsLike = self?.navigateDelegate?.isLike(indexPath.row) ?? false
+
+                if currentIsLike {
+                    self?.navigateDelegate?.deleteLike(indexPath.row)
+                    cell.setUnlikeState()
+                } else {
+                    self?.navigateDelegate?.addLike(indexPath.row)
+                    cell.setLikeState()
+                }
+            }
         } else {
             let image = selectedRegionImages[indexPath.row]
             cell.configure(image)
@@ -112,7 +132,8 @@ extension RegionCollectionView: UICollectionViewDelegate {
         
         if isListVC {
             let currentRegion = allRegions[indexPath.row]
-            navigateDelegate?.navigateDetailsViewController(currentRegion)
+            let currentLike = navigateDelegate?.isLike(indexPath.row) ?? false
+            navigateDelegate?.navigateDetailsViewController(currentRegion, indexPath, currentLike)
         }
     }
 }
