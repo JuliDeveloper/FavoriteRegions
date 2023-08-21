@@ -52,10 +52,22 @@ final class RegionCollectionViewCell: UICollectionViewCell {
         gradient.removeFromSuperlayer()
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
+            updateGradientColors()
+        }
+    }
+        
     func configure(_ region: Region) {
         regionTitleLabel.text = region.title
         
-        likeButton.addTarget(self, action: #selector(changeIsLike), for: .touchUpInside)
+        likeButton.addTarget(
+            self,
+            action: #selector(changeIsLike),
+            for: .touchUpInside
+        )
         
         setupViews(region.thumbUrls[0])
         
@@ -73,6 +85,12 @@ final class RegionCollectionViewCell: UICollectionViewCell {
         likeButton.setImage(UIImage(named: imageName), for: .normal)
     }
     
+    @objc private func changeIsLike() {
+        likeButtonTapped?()
+    }
+}
+
+extension RegionCollectionViewCell {
     private func setupViews(_ imageName: String) {
         setCellConfig()
         
@@ -118,14 +136,19 @@ final class RegionCollectionViewCell: UICollectionViewCell {
             )
         ])
         
-        gradientView.layer.setNeedsLayout()
         self.layoutIfNeeded()
+    }
+    
+    private func updateGradientColors() {
+        gradient.colors = [
+            UIColor.frBackgroundColor.withAlphaComponent(0).cgColor,
+            UIColor.frBackgroundColor.withAlphaComponent(0.5).cgColor
+        ]
     }
     
     private func setupGradient() {
         gradient.frame = gradientView.bounds
-        gradient.colors = [UIColor.frBackgroundColor.withAlphaComponent(0).cgColor,
-                           UIColor.frBackgroundColor.withAlphaComponent(0.5).cgColor]
+        updateGradientColors()
         gradientView.layer.insertSublayer(gradient, at: 1)
     }
     
@@ -179,9 +202,5 @@ final class RegionCollectionViewCell: UICollectionViewCell {
                 equalTo: mainStackView.trailingAnchor
             )
         ])
-    }
-    
-    @objc private func changeIsLike() {
-        likeButtonTapped?()
     }
 }
