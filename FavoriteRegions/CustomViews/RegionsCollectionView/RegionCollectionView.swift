@@ -48,6 +48,32 @@ final class RegionCollectionView: UICollectionView {
         dataSource = self
         delegate = self
     }
+    
+    private func configureListCell(_ cell: RegionCollectionViewCell, at indexPath: IndexPath) {
+        let region = allRegions[indexPath.row]
+        cell.configure(region)
+        
+        let isLike = navigateDelegate?.isLike(indexPath.row) ?? false
+        cell.setLikeButtonState(isLiked: isLike)
+        
+        cell.likeButtonTapped = { [weak self] in
+            guard let strongSelf = self else { return }
+            let currentIsLike = strongSelf.navigateDelegate?.isLike(indexPath.row) ?? false
+
+            if currentIsLike {
+                strongSelf.navigateDelegate?.deleteLike(indexPath.row)
+            } else {
+                strongSelf.navigateDelegate?.addLike(indexPath.row)
+            }
+            
+            cell.setLikeButtonState(isLiked: !currentIsLike)
+        }
+    }
+    
+    private func configureImageCell(_ cell: RegionCollectionViewCell, at indexPath: IndexPath) {
+        let image = selectedRegionImages[indexPath.row]
+        cell.configure(image)
+    }
 }
 
 extension RegionCollectionView: UICollectionViewDataSource {
@@ -66,31 +92,9 @@ extension RegionCollectionView: UICollectionViewDataSource {
         }
         
         if isListVC {
-            let region = allRegions[indexPath.row]
-            cell.configure(region, isListVC)
-            
-            let isLike = navigateDelegate?.isLike(indexPath.row) ?? false
-            
-            if isLike {
-                cell.setLikeState()
-            } else {
-                cell.setUnlikeState()
-            }
-            
-            cell.likeButtonTapped = { [weak self] in
-                let currentIsLike = self?.navigateDelegate?.isLike(indexPath.row) ?? false
-
-                if currentIsLike {
-                    self?.navigateDelegate?.deleteLike(indexPath.row)
-                    cell.setUnlikeState()
-                } else {
-                    self?.navigateDelegate?.addLike(indexPath.row)
-                    cell.setLikeState()
-                }
-            }
+            configureListCell(cell, at: indexPath)
         } else {
-            let image = selectedRegionImages[indexPath.row]
-            cell.configure(image)
+            configureImageCell(cell, at: indexPath)
         }
         
         return cell

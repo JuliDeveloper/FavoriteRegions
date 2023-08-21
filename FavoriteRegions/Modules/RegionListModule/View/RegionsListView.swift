@@ -2,7 +2,8 @@ import UIKit
 
 protocol RegionsListViewDelegate: AnyObject {
     func reloadCollectionView()
-    func updateCollectionView()
+    func updateCollectionView(_ selectedIndexPath: IndexPath)
+    func reloadCollectionViewCell(_ indexPath: IndexPath)
     func navigateDetailsViewController(_ region: Region, _  currentIndexPath: IndexPath?, _ isLike: Bool)
     func startActivityIndicator()
     func stopActivityIndicator()
@@ -10,7 +11,6 @@ protocol RegionsListViewDelegate: AnyObject {
     func addLike(_ index: Int)
     func deleteLike(_ index: Int)
     func isLike(_ index: Int) -> Bool
-    func didChangeLikeStatus(_ index: Int, _ isLiked: Bool)
 }
 
 final class RegionsListView: UIView {
@@ -24,7 +24,7 @@ final class RegionsListView: UIView {
     
     private lazy var refreshControl: UIRefreshControl = {
         let control = UIRefreshControl()
-        control.addTarget(self, action: #selector(refreshWeatherData), for: .valueChanged)
+        control.addTarget(self, action: #selector(refreshRegionsData), for: .valueChanged)
         return control
     }()
     
@@ -77,7 +77,7 @@ final class RegionsListView: UIView {
         ])
     }
     
-    @objc private func refreshWeatherData() {
+    @objc private func refreshRegionsData() {
         delegate?.reloadFetchRegions()
     }
 }
@@ -87,12 +87,13 @@ extension RegionsListView: RegionsListViewDelegate {
         collectionView.reloadData()
     }
     
-    func updateCollectionView() {
-        if let selectedIndexPath = collectionView.indexPathsForSelectedItems?.first {
-            let cell = collectionView.cellForItem(at: selectedIndexPath)
-            cell?.layer.borderWidth = Constants.WidthBorder.deselected
-            collectionView.reloadItems(at: [selectedIndexPath])
-        }
+    func updateCollectionView(_ selectedIndexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: selectedIndexPath)
+        cell?.layer.borderWidth = Constants.WidthBorder.deselected
+    }
+    
+    func reloadCollectionViewCell(_ indexPath: IndexPath) {
+        collectionView.reloadItems(at: [indexPath])
     }
     
     func navigateDetailsViewController(_ region: Region, _ currentIndexPath: IndexPath?, _ isLike: Bool) {
@@ -122,14 +123,5 @@ extension RegionsListView: RegionsListViewDelegate {
     func isLike(_ index: Int) -> Bool {
         guard let result = delegate?.isLike(index) else { return false }
         return result
-    }
-    
-    func didChangeLikeStatus(_ index: Int, _ isLiked: Bool) {
-        if isLiked {
-            deleteLike(index)
-        } else {
-            addLike(index)
-        }
-        updateCollectionView()
     }
 }

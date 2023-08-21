@@ -21,10 +21,10 @@ final class RegionCollectionViewCell: UICollectionViewCell {
     
     private let regionTitleLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 15)
+        label.font = .frSubtitle
         label.text = "Regions"
         label.textColor = .frTextColor
-        label.numberOfLines = 1
+        label.numberOfLines = Constants.CollectionViewCell.regionTitleLabelNumberOfLines
         label.textAlignment = .left
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -52,15 +52,12 @@ final class RegionCollectionViewCell: UICollectionViewCell {
         gradient.removeFromSuperlayer()
     }
     
-    func configure(_ region: Region, _ isListVC: Bool) {
-        setCellConfig()
-        
+    func configure(_ region: Region) {
         regionTitleLabel.text = region.title
         
         likeButton.addTarget(self, action: #selector(changeIsLike), for: .touchUpInside)
         
-        defaultUIConfig()
-        setImage(region.thumbUrls[0])
+        setupViews(region.thumbUrls[0])
         
         addElements()
         setupConstraints()
@@ -68,18 +65,19 @@ final class RegionCollectionViewCell: UICollectionViewCell {
     }
     
     func configure(_ image: String) {
+        setupViews(image)
+    }
+    
+    func setLikeButtonState(isLiked: Bool) {
+        let imageName = isLiked ? "activeIsLike" : "noActiveIsLike"
+        likeButton.setImage(UIImage(named: imageName), for: .normal)
+    }
+    
+    private func setupViews(_ imageName: String) {
         setCellConfig()
         
         defaultUIConfig()
-        setImage(image)
-    }
-    
-    func setLikeState() {
-        likeButton.setImage(UIImage(named: "activeIsLike"), for: .normal)
-    }
-    
-    func setUnlikeState() {
-        likeButton.setImage(UIImage(named: "noActiveIsLike"), for: .normal)
+        setImage(imageName)
     }
     
     private func setCellConfig() {
@@ -174,8 +172,12 @@ final class RegionCollectionViewCell: UICollectionViewCell {
                 constant: -Constants.Constraints.cellConstraints
             ),
             
-            regionTitleLabel.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor),
-            regionTitleLabel.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor)
+            regionTitleLabel.leadingAnchor.constraint(
+                equalTo: mainStackView.leadingAnchor
+            ),
+            regionTitleLabel.trailingAnchor.constraint(
+                equalTo: mainStackView.trailingAnchor
+            )
         ])
     }
     

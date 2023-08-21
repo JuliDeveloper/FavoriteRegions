@@ -14,14 +14,14 @@ final class DetailsRegionView: UIView {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.distribution = .equalSpacing
-        stack.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        stack.layoutMargins = Constants.DetailsView.layoutMarginsHeaderStack
         stack.isLayoutMarginsRelativeArrangement = true
         stack.backgroundColor = .frBackgroundColor
-        stack.layer.cornerRadius = 20
+        stack.layer.cornerRadius = Constants.Radius.stack
         stack.layer.shadowColor = UIColor.black.cgColor
-        stack.layer.shadowOpacity = 0.2
+        stack.layer.shadowOpacity = Constants.DetailsView.shadowOpacityHeaderStack
         stack.layer.shadowOffset = .zero
-        stack.layer.shadowRadius = 20
+        stack.layer.shadowRadius = Constants.Radius.stack
         return stack
     }()
     
@@ -29,7 +29,7 @@ final class DetailsRegionView: UIView {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.distribution = .fill
-        stack.spacing = 5
+        stack.spacing = Constants.DetailsView.viewsStackSpacing
         return stack
     }()
     
@@ -42,13 +42,12 @@ final class DetailsRegionView: UIView {
     
     private let viewsLabel: UILabel = {
         let label = UILabel()
-        label.text = "111"
-        label.font = .systemFont(ofSize: 15)
-        label.textColor = .frTextColor.withAlphaComponent(0.3)
+        label.font = .frSubtitle
+        label.textColor = .frTextColor.withAlphaComponent(Constants.DetailsView.viewsLabelOpacity)
         return label
     }()
     
-    private lazy var likeButton = LikeButton()
+    private let likeButton = LikeButton()
     
     private lazy var collectionView: RegionCollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -61,34 +60,37 @@ final class DetailsRegionView: UIView {
     
     var likeButtonTapped: (() -> Void)?
     
-    func configure(_ region: Region, _ isLike: Bool) {
-        collectionView.selectedRegionImages = region.thumbUrls
-        
-        backgroundColor = .frBackgroundColor
-        
-        viewsLabel.text = "\(region.viewsCount)"
-        
-        likeButton.addTarget(self, action: #selector(changeIsLike), for: .touchUpInside)
-        
-        if isLike {
-            likeButton.setImage(UIImage(named: "activeIsLike"), for: .normal)
-        } else {
-            likeButton.setImage(UIImage(named: "noActiveIsLike"), for: .normal)
-        }
-        
+    init() {
+        super.init(frame: .zero)
         addElements()
         setupConstraints()
     }
     
-    func setLikeState() {
-        likeButton.setImage(UIImage(named: "activeIsLike"), for: .normal)
-        
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
-    func setUnlikeState() {
-        likeButton.setImage(UIImage(named: "noActiveIsLike"), for: .normal)
+    func configure(_ region: Region, _ isLike: Bool) {
+        setupViews(region)
+        setLikeButtonState(isLiked: isLike)
     }
     
+    func setLikeButtonState(isLiked: Bool) {
+        let imageName = isLiked ? "activeIsLike" : "noActiveIsLike"
+        likeButton.setImage(UIImage(named: imageName), for: .normal)
+    }
+    
+    private func setupViews(_ region: Region) {
+        backgroundColor = .frBackgroundColor
+
+        collectionView.selectedRegionImages = region.thumbUrls
+        viewsLabel.text = "\(region.viewsCount)"
+        likeButton.addTarget(
+            self,
+            action: #selector(changeIsLike),
+            for: .touchUpInside
+        )
+    }
     
     private func addElements() {
         addSubview(generalStack)

@@ -1,9 +1,5 @@
 import UIKit
 
-protocol DetailsRegionViewControllerProtocol: AnyObject {
-    
-}
-
 final class DetailsRegionViewController: UIViewController {
     
     private let customView = DetailsRegionView()
@@ -26,7 +22,7 @@ final class DetailsRegionViewController: UIViewController {
             self?.handleLikeButtonTapped()
         }
         
-        if let region {
+        if let region = region {
             customView.configure(region, isLike)
         }
     }
@@ -35,28 +31,38 @@ final class DetailsRegionViewController: UIViewController {
         setupNavBar()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        delegate?.updateCollectionView(indexPath ?? IndexPath())
+    }
+    
     private func setupNavBar() {
         let regionTitle = region?.title ?? ""
         title = "\(regionTitle)"
         navigationController?.navigationBar.prefersLargeTitles = false
 
-        let backButton = UIBarButtonItem(image: UIImage(named: "chevron.left"), style: .done, target: self, action: #selector(backToCollection))
+        let backButton = UIBarButtonItem(
+            image: UIImage(named: "chevron.left"),
+            style: .done,
+            target: self,
+            action: #selector(backToCollection)
+        )
         
         navigationItem.leftBarButtonItem = backButton
     }
     
     private func handleLikeButtonTapped() {
-        if let indexPath {
-            if isLike {
-                presenter?.deleteLike(indexPath.row)
-                customView.setUnlikeState()
-                delegate?.didChangeLikeStatus(indexPath.row, isLike)
-            } else {
-                presenter?.addLike(indexPath.row)
-                customView.setLikeState()
-                delegate?.didChangeLikeStatus(indexPath.row, isLike)
-            }
+        guard let indexPath = indexPath else { return }
+        
+        if isLike {
+            presenter?.deleteLike(indexPath.row)
+        } else {
+            presenter?.addLike(indexPath.row)
         }
+        
+        isLike.toggle()
+        customView.setLikeButtonState(isLiked: isLike)
+        delegate?.toggleLikeState(indexPath, isLike)
     }
     
     @objc private func backToCollection() {

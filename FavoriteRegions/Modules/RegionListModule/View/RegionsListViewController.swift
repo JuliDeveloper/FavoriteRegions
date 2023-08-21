@@ -6,16 +6,8 @@ protocol RegionsListViewControllerDelegate: AnyObject {
     func addLike(_ index: Int)
     func deleteLike(_ index: Int)
     func isLike(_ index: Int) -> Bool
-    func didChangeLikeStatus(_ index: Int, _ isLiked: Bool)
-}
-
-protocol RegionsListViewControllerProtocol: AnyObject {
-    func showDetailsViewController(_ region: Region, _ currentIndexPath: IndexPath?, _ isLike: Bool)
-    func updateRegions(_ regions: [Region])
-    func startLoading()
-    func stopLoading()
-    func stopRefreshing()
-    func showAlert()
+    func toggleLikeState(_ indexPath: IndexPath, _ isLiked: Bool)
+    func updateCollectionView(_ selectedIndexPath: IndexPath)
 }
 
 class RegionsListViewController: UIViewController {
@@ -40,7 +32,6 @@ class RegionsListViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        delegate?.updateCollectionView()
         setupNavigationBar()
     }
     
@@ -59,8 +50,19 @@ class RegionsListViewController: UIViewController {
     }
     
     private func fetchData() {
-        presenter?.fetchRegions()
-        regions = presenter?.regionsList ?? []
+        presenter?.fetchRegions { [weak self] regions in
+            guard let self = self else { return }
+            if regions.isEmpty {
+                self.showAlert(
+                    title: "Не получилось загрузить данные",
+                    message: "Попробуйте еще раз"
+                ) { _ in
+                    self.fetchData()
+                }
+            } else {
+                self.regions = regions
+            }
+        }
     }
 }
 
@@ -91,8 +93,11 @@ extension RegionsListViewController: RegionsListViewControllerProtocol {
         delegate?.stopRefreshControl()
     }
     
-    func showAlert() {
-        showAlert { [weak self] _ in
+    func showErrorAlert() {
+        showAlert(
+            title: "Oшибка",
+            message: "Проверьте ваше интернет соединение"
+        ) { [weak self] _ in
             self?.fetchData()
         }
     }
@@ -120,7 +125,16 @@ extension RegionsListViewController: RegionsListViewControllerDelegate {
         return result
     }
     
-    func didChangeLikeStatus(_ index: Int, _ isLiked: Bool) {
-        delegate?.didChangeLikeStatus(index, isLiked)
+    func toggleLikeState(_ indexPath: IndexPath, _ isLiked: Bool) {
+        if !isLiked {
+            deleteLike(indexPath.row)
+        } else {
+            addLike(indexPath.row)
+        }
+        delegate?.reloadCollectionViewCell(indexPath)
+    }
+    
+    func updateCollectionView(_ selectedIndexPath: IndexPath) {
+        delegate?.updateCollectionView(selectedIndexPath)
     }
 }

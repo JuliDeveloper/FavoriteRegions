@@ -1,10 +1,10 @@
 import UIKit
 
 extension UIViewController {
-    func showAlert(_ action: ((UIAlertAction) -> Void)?) {
+    func showAlert(title: String?, message: String?, _ action: ((UIAlertAction) -> Void)?) {
         let alert = UIAlertController(
-            title: "Oшибка",
-            message: "Проверьте ваше интернет соединение",
+            title: title,
+            message: message,
             preferredStyle: .alert
         )
         
