@@ -91,6 +91,8 @@ extension RegionCollectionView: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
+        cell.generalConfigure(isListVC)
+        
         if isListVC {
             configureListCell(cell, at: indexPath)
         } else {
@@ -124,20 +126,23 @@ extension RegionCollectionView: UICollectionViewDelegateFlowLayout {
 
 extension RegionCollectionView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if selectedIndexPath != nil {
-            let cell = collectionView.cellForItem(at: selectedIndexPath ?? IndexPath())
-            cell?.layer.borderWidth = Constants.WidthBorder.deselected
-        }
-        
-        selectedIndexPath = indexPath
-        let cell = collectionView.cellForItem(at: indexPath)
-        cell?.layer.borderWidth = Constants.WidthBorder.selected
-        cell?.layer.borderColor = UIColor.frPurpleColor.cgColor
-        
         if isListVC {
+            if selectedIndexPath != nil {
+                let cell = collectionView.cellForItem(at: selectedIndexPath ?? IndexPath())
+                cell?.layer.borderWidth = Constants.WidthBorder.deselected
+            }
+            
+            selectedIndexPath = indexPath
+            let cell = collectionView.cellForItem(at: indexPath)
+            cell?.layer.borderWidth = Constants.WidthBorder.selected
+            cell?.layer.borderColor = UIColor.frPurpleColor.cgColor
+            
+            
             let currentRegion = allRegions[indexPath.row]
             let currentLike = navigateDelegate?.isLike(indexPath.row) ?? false
             navigateDelegate?.navigateDetailsViewController(currentRegion, indexPath, currentLike)
+        } else {
+            // TODO: - доделать превью или доп экран с картинкой в модальном виде и хватит
         }
     }
 }

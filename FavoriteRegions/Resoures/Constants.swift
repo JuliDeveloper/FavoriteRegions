@@ -16,7 +16,7 @@ struct Constants {
     
     struct WidthBorder {
         static let deselected: CGFloat = 0
-        static let selected: CGFloat = 4
+        static let selected: CGFloat = 2
     }
     
     struct Radius {

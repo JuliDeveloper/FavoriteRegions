@@ -21,7 +21,7 @@ final class RegionCollectionViewCell: UICollectionViewCell {
     
     private let regionTitleLabel: UILabel = {
         let label = UILabel()
-        label.font = .frSubtitle
+        label.font = .frSubtitleBold
         label.text = "Regions"
         label.textColor = .frTextColor
         label.numberOfLines = Constants.CollectionViewCell.regionTitleLabelNumberOfLines
@@ -32,31 +32,15 @@ final class RegionCollectionViewCell: UICollectionViewCell {
     
     private let likeButton = LikeButton()
     
-    private let gradientView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    private let gradient = CAGradientLayer()
-        
     var likeButtonTapped: (() -> Void)?
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        gradient.frame = gradientView.bounds
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        gradient.removeFromSuperlayer()
-    }
-    
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
+    func generalConfigure(_ isList: Bool) {
+        setCellConfig()
+        defaultUIConfig()
         
-        if previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
-            updateGradientColors()
+        if isList {
+            addElements()
+            setupConstraints()
         }
     }
         
@@ -69,33 +53,22 @@ final class RegionCollectionViewCell: UICollectionViewCell {
             for: .touchUpInside
         )
         
-        setupViews(region.thumbUrls[0])
-        
-        addElements()
-        setupConstraints()
-        setupGradient()
+        setImage(region.thumbUrls[0])
     }
     
     func configure(_ image: String) {
-        setupViews(image)
+        setImage(image)
     }
     
     func setLikeButtonState(isLiked: Bool) {
         let imageName = isLiked ? "activeIsLike" : "noActiveIsLike"
         likeButton.setImage(UIImage(named: imageName), for: .normal)
     }
-    
-    @objc private func changeIsLike() {
-        likeButtonTapped?()
-    }
 }
 
 extension RegionCollectionViewCell {
-    private func setupViews(_ imageName: String) {
-        setCellConfig()
-        
-        defaultUIConfig()
-        setImage(imageName)
+    @objc private func changeIsLike() {
+        likeButtonTapped?()
     }
     
     private func setCellConfig() {
@@ -106,7 +79,6 @@ extension RegionCollectionViewCell {
     
     private func defaultUIConfig() {
         contentView.addSubview(regionImageView)
-        contentView.addSubview(gradientView)
                 
         NSLayoutConstraint.activate([
             regionImageView.leadingAnchor.constraint(
@@ -120,36 +92,8 @@ extension RegionCollectionViewCell {
             ),
             regionImageView.bottomAnchor.constraint(
                 equalTo: contentView.bottomAnchor
-            ),
-            
-            gradientView.heightAnchor.constraint(
-                equalToConstant: 50
-            ),
-            gradientView.leadingAnchor.constraint(
-                equalTo: contentView.leadingAnchor
-            ),
-            gradientView.trailingAnchor.constraint(
-                equalTo: contentView.trailingAnchor
-            ),
-            gradientView.bottomAnchor.constraint(
-                equalTo: contentView.bottomAnchor
             )
         ])
-        
-        self.layoutIfNeeded()
-    }
-    
-    private func updateGradientColors() {
-        gradient.colors = [
-            UIColor.frBackgroundColor.withAlphaComponent(0).cgColor,
-            UIColor.frBackgroundColor.withAlphaComponent(0.5).cgColor
-        ]
-    }
-    
-    private func setupGradient() {
-        gradient.frame = gradientView.bounds
-        updateGradientColors()
-        gradientView.layer.insertSublayer(gradient, at: 1)
     }
     
     private func setImage(_ imageUrl: String) {
