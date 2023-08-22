@@ -1,5 +1,9 @@
 import UIKit
 
+protocol DetailsRegionViewDelegate: AnyObject {
+    func showSelectedImageViewController(_ imageName: String)
+}
+
 final class DetailsRegionView: UIView {
     
     private let generalStack: UIStackView = {
@@ -54,11 +58,14 @@ final class DetailsRegionView: UIView {
         let view = RegionCollectionView(
             frame: .zero, collectionViewLayout: layout, isListVC: false
         )
-        view.navigateDelegate = nil
+        view.regionListDelegate = nil
+        view.selectedRegionImageDelegate = self
         return view
     }()
     
     var likeButtonTapped: (() -> Void)?
+    
+    weak var selectedRegionImageDelegate: DetailsRegionViewControllerDelegate?
     
     init() {
         super.init(frame: .zero)
@@ -122,5 +129,11 @@ final class DetailsRegionView: UIView {
     
     @objc private func changeIsLike() {
         likeButtonTapped?()
+    }
+}
+
+extension DetailsRegionView: DetailsRegionViewDelegate {
+    func showSelectedImageViewController(_ imageName: String) {
+        selectedRegionImageDelegate?.navigateSelectedImageViewController(imageName)
     }
 }

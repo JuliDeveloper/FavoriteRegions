@@ -1,5 +1,9 @@
 import UIKit
 
+protocol DetailsRegionViewControllerDelegate: AnyObject {
+    func navigateSelectedImageViewController(_ imageName: String)
+}
+
 final class DetailsRegionViewController: UIViewController {
     
     private let customView = DetailsRegionView()
@@ -13,6 +17,7 @@ final class DetailsRegionViewController: UIViewController {
     
     override func loadView() {
         view = customView
+        customView.selectedRegionImageDelegate = self
     }
     
     override func viewDidLoad() {
@@ -66,6 +71,24 @@ final class DetailsRegionViewController: UIViewController {
     }
     
     @objc private func backToCollection() {
+        presenter?.backToRootViewController()
+    }
+}
+
+extension DetailsRegionViewController: DetailsRegionViewProtocol {
+    func backToRegionsCollection() {
         navigationController?.popViewController(animated: true)
+    }
+    
+    func showSelectedImage(_ imageName: String) {
+        let selectedImageVC = SelectedImageViewController()
+        selectedImageVC.imageName = imageName
+        navigationController?.present(selectedImageVC, animated: true)
+    }
+}
+
+extension DetailsRegionViewController: DetailsRegionViewControllerDelegate {
+    func navigateSelectedImageViewController(_ imageName: String) {
+        presenter?.showSelectedImageView(imageName)
     }
 }

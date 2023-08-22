@@ -69,10 +69,13 @@ class RegionsListViewController: UIViewController {
 extension RegionsListViewController: RegionsListViewControllerProtocol {
     func showDetailsViewController(_ region: Region, _  currentIndexPath: IndexPath?, _ isLike: Bool) {
         let detailsVC = DetailsRegionViewController()
+        let presenter = DetailsRegionPresenter()
         detailsVC.delegate = self
         detailsVC.region = region
         detailsVC.indexPath = currentIndexPath
         detailsVC.isLike = isLike
+        detailsVC.presenter = presenter
+        presenter.view = detailsVC
         navigationController?.pushViewController(detailsVC, animated: true)
     }
     

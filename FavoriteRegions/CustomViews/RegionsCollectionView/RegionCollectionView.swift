@@ -24,7 +24,8 @@ final class RegionCollectionView: UICollectionView {
         }
     }
         
-    weak var navigateDelegate: RegionsListViewDelegate?
+    weak var regionListDelegate: RegionsListViewDelegate?
+    weak var selectedRegionImageDelegate: DetailsRegionViewDelegate?
     
     init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout, isListVC: Bool) {
         self.isListVC = isListVC
@@ -53,17 +54,17 @@ final class RegionCollectionView: UICollectionView {
         let region = allRegions[indexPath.row]
         cell.configure(region)
         
-        let isLike = navigateDelegate?.isLike(indexPath.row) ?? false
+        let isLike = regionListDelegate?.isLike(indexPath.row) ?? false
         cell.setLikeButtonState(isLiked: isLike)
         
         cell.likeButtonTapped = { [weak self] in
             guard let strongSelf = self else { return }
-            let currentIsLike = strongSelf.navigateDelegate?.isLike(indexPath.row) ?? false
+            let currentIsLike = strongSelf.regionListDelegate?.isLike(indexPath.row) ?? false
 
             if currentIsLike {
-                strongSelf.navigateDelegate?.deleteLike(indexPath.row)
+                strongSelf.regionListDelegate?.deleteLike(indexPath.row)
             } else {
-                strongSelf.navigateDelegate?.addLike(indexPath.row)
+                strongSelf.regionListDelegate?.addLike(indexPath.row)
             }
             
             cell.setLikeButtonState(isLiked: !currentIsLike)
@@ -139,10 +140,11 @@ extension RegionCollectionView: UICollectionViewDelegate {
             
             
             let currentRegion = allRegions[indexPath.row]
-            let currentLike = navigateDelegate?.isLike(indexPath.row) ?? false
-            navigateDelegate?.navigateDetailsViewController(currentRegion, indexPath, currentLike)
+            let currentLike = regionListDelegate?.isLike(indexPath.row) ?? false
+            regionListDelegate?.navigateDetailsViewController(currentRegion, indexPath, currentLike)
         } else {
-            // TODO: - доделать превью или доп экран с картинкой в модальном виде и хватит
+            let currentImageRegion = selectedRegionImages[indexPath.row]
+            selectedRegionImageDelegate?.showSelectedImageViewController(currentImageRegion)
         }
     }
 }

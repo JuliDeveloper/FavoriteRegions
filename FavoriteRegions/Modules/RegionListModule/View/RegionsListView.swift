@@ -33,7 +33,8 @@ final class RegionsListView: UIView {
         let view = RegionCollectionView(
             frame: .zero, collectionViewLayout: layout, isListVC: true
         )
-        view.navigateDelegate = self
+        view.regionListDelegate = self
+        view.selectedRegionImageDelegate = nil
         view.refreshControl = refreshControl
         return view
     }()
