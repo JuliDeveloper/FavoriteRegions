@@ -8,12 +8,24 @@ final class DetailsRegionViewController: UIViewController {
     
     private let customView = DetailsRegionView()
     
-    var region: Region?
-    var presenter: DetailsRegionPresenterProtocol?
-    var indexPath: IndexPath?
-    var isLike = false
+    private var region: Region?
+    private var presenter: DetailsRegionPresenterProtocol?
+    private var indexPath: IndexPath?
+    private var isLike = false
     
     weak var delegate: RegionsListViewControllerDelegate?
+    
+    init(region: Region?, presenter: DetailsRegionPresenterProtocol?, indexPath: IndexPath?, isLike: Bool) {
+        super.init(nibName: nil, bundle: nil)
+        self.region = region
+        self.presenter = presenter
+        self.indexPath = indexPath
+        self.isLike = isLike
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func loadView() {
         view = customView

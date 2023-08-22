@@ -8,9 +8,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let scene = (scene as? UIWindowScene) else { return }
         
         let presenter = RegionsListPresenter()
-        let view = RegionsListViewController()
+        let view = RegionsListViewController(presenter: presenter)
         presenter.view = view
-        view.presenter = presenter
         
         window = UIWindow(windowScene: scene)
         window?.rootViewController = UINavigationController(rootViewController: view)

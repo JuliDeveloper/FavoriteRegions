@@ -20,13 +20,21 @@ class RegionsListViewController: UIViewController {
         }
     }
     
-    var presenter: RegionsListPresenterProtocol?
+    private var presenter: RegionsListPresenterProtocol?
     weak var delegate: RegionsListViewDelegate?
+    
+    init(presenter: RegionsListPresenterProtocol?) {
+        super.init(nibName: nil, bundle: nil)
+        self.presenter = presenter
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func loadView() {
         customView.delegate = self
         delegate = customView
-        customView.configure()
         view = customView
     }
     
@@ -37,6 +45,7 @@ class RegionsListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        customView.configure()
         fetchData()
     }
     
@@ -68,13 +77,14 @@ class RegionsListViewController: UIViewController {
 
 extension RegionsListViewController: RegionsListViewControllerProtocol {
     func showDetailsViewController(_ region: Region, _  currentIndexPath: IndexPath?, _ isLike: Bool) {
-        let detailsVC = DetailsRegionViewController()
         let presenter = DetailsRegionPresenter()
+        let detailsVC = DetailsRegionViewController(
+            region: region,
+            presenter: presenter,
+            indexPath: currentIndexPath,
+            isLike: isLike
+        )
         detailsVC.delegate = self
-        detailsVC.region = region
-        detailsVC.indexPath = currentIndexPath
-        detailsVC.isLike = isLike
-        detailsVC.presenter = presenter
         presenter.view = detailsVC
         navigationController?.pushViewController(detailsVC, animated: true)
     }
