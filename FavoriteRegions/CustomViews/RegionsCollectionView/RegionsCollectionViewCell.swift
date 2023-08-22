@@ -111,9 +111,9 @@ extension RegionCollectionViewCell {
     private func setImage(_ imageUrl: String) {
         guard let url = URL(string: imageUrl) else { return }
         
+        regionImageView.kf.indicatorType = .activity
         regionImageView.kf.setImage(
-            with: url,
-            placeholder: UIImage(named: "placeholder")
+            with: url
         )
     }
     

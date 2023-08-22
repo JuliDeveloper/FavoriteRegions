@@ -30,9 +30,9 @@ final class SelectedImageView: UIView {
     private func setImage(_ imageUrl: String) {
         guard let url = URL(string: imageUrl) else { return }
         
+        imageView.kf.indicatorType = .activity
         imageView.kf.setImage(
-            with: url,
-            placeholder: UIImage(named: "placeholder")
+            with: url
         )
     }
 }
