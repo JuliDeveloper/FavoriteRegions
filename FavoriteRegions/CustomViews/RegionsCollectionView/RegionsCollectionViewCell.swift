@@ -10,13 +10,25 @@ final class RegionCollectionViewCell: UICollectionViewCell {
         return view
     }()
 
-    private let mainStackView: UIStackView = {
-        let stack = UIStackView()
+    private lazy var mainStackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [
+            likeButton,
+            regionTitleView
+        ])
         stack.axis = .vertical
         stack.distribution = .equalSpacing
         stack.alignment = .trailing
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
+    }()
+    
+    private let regionTitleView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .frBackgroundColor.withAlphaComponent(0.5)
+        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        view.layer.cornerRadius = Constants.Radius.small
+        return view
     }()
     
     private let regionTitleLabel: UILabel = {
@@ -73,7 +85,7 @@ extension RegionCollectionViewCell {
     
     private func setCellConfig() {
         backgroundColor = .frDarkGray
-        layer.cornerRadius = Constants.Radius.cell
+        layer.cornerRadius = Constants.Radius.regular
         clipsToBounds = true
     }
     
@@ -97,11 +109,7 @@ extension RegionCollectionViewCell {
     }
     
     private func setImage(_ imageUrl: String) {
-        guard
-            let url = URL(string: imageUrl)
-        else {
-            return
-        }
+        guard let url = URL(string: imageUrl) else { return }
         
         regionImageView.kf.setImage(
             with: url,
@@ -111,39 +119,49 @@ extension RegionCollectionViewCell {
     
     private func addElements() {
         contentView.addSubview(mainStackView)
-        
-        [
-            likeButton,
-            regionTitleLabel
-        ].forEach {
-            mainStackView.addArrangedSubview($0)
-        }
+        regionTitleView.addSubview(regionTitleLabel)
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             mainStackView.leadingAnchor.constraint(
-                equalTo: contentView.leadingAnchor,
-                constant: Constants.Constraints.cellConstraints
+                equalTo: contentView.leadingAnchor
             ),
             mainStackView.topAnchor.constraint(
-                equalTo: contentView.topAnchor,
-                constant: Constants.Constraints.cellConstraints
+                equalTo: contentView.topAnchor
             ),
             mainStackView.trailingAnchor.constraint(
-                equalTo: contentView.trailingAnchor,
-                constant: -Constants.Constraints.cellConstraints
+                equalTo: contentView.trailingAnchor
             ),
             mainStackView.bottomAnchor.constraint(
-                equalTo: contentView.bottomAnchor,
-                constant: -Constants.Constraints.cellConstraints
+                equalTo: contentView.bottomAnchor
+            ),
+            
+            regionTitleView.leadingAnchor.constraint(
+                equalTo: mainStackView.leadingAnchor
+            ),
+            regionTitleView.trailingAnchor.constraint(
+                equalTo: mainStackView.trailingAnchor
+            ),
+            regionTitleView.bottomAnchor.constraint(
+                equalTo: mainStackView.bottomAnchor
             ),
             
             regionTitleLabel.leadingAnchor.constraint(
-                equalTo: mainStackView.leadingAnchor
+                equalTo: regionTitleView.leadingAnchor,
+                constant: Constants.Constraints.cellConstraints
             ),
             regionTitleLabel.trailingAnchor.constraint(
-                equalTo: mainStackView.trailingAnchor
+                equalTo: regionTitleView.trailingAnchor,
+                constant: -Constants.Constraints.cellConstraints
+            ),
+            regionTitleLabel.topAnchor.constraint(
+                equalTo: regionTitleView.topAnchor,
+                constant: 5
+            ),
+            regionTitleLabel.bottomAnchor.constraint(
+                equalTo: regionTitleView.bottomAnchor,
+                constant: -5
             )
         ])
     }

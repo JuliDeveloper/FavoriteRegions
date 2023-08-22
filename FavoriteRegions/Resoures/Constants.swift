@@ -20,8 +20,9 @@ struct Constants {
     }
     
     struct Radius {
-        static let cell: CGFloat = 16
-        static let stack: CGFloat = 20
+        static let regular: CGFloat = 16
+        static let big: CGFloat = 20
+        static let small: CGFloat = 8
     }
     
     struct Constraints {

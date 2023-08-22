@@ -17,11 +17,11 @@ final class DetailsRegionView: UIView {
         stack.layoutMargins = Constants.DetailsView.layoutMarginsHeaderStack
         stack.isLayoutMarginsRelativeArrangement = true
         stack.backgroundColor = .frBackgroundColor
-        stack.layer.cornerRadius = Constants.Radius.stack
+        stack.layer.cornerRadius = Constants.Radius.big
         stack.layer.shadowColor = UIColor.black.cgColor
         stack.layer.shadowOpacity = Constants.DetailsView.shadowOpacityHeaderStack
         stack.layer.shadowOffset = .zero
-        stack.layer.shadowRadius = Constants.Radius.stack
+        stack.layer.shadowRadius = Constants.Radius.big
         return stack
     }()
     
