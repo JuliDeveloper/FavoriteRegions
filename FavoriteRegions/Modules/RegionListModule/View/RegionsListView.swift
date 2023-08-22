@@ -80,6 +80,8 @@ final class RegionsListView: UIView {
     
     @objc private func refreshRegionsData() {
         delegate?.reloadFetchRegions()
+        reloadCollectionView()
+        activeIndicator.isHidden = true
     }
 }
 
