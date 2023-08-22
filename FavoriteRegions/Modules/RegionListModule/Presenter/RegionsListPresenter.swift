@@ -28,7 +28,6 @@ extension RegionsListPresenter: RegionsListPresenterProtocol {
                 case .success(let regions):
                     self?.view?.updateRegions(regions)
                     self?.view?.stopLoading()
-                    self?.view?.stopRefreshing()
                     completion(regions)
                 case .failure(_):
                     self?.view?.showErrorAlert()

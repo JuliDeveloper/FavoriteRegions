@@ -102,10 +102,6 @@ extension RegionsListViewController: RegionsListViewControllerProtocol {
         delegate?.stopActivityIndicator()
     }
     
-    func stopRefreshing() {
-        delegate?.stopRefreshControl()
-    }
-    
     func showErrorAlert() {
         showAlert(
             title: "Oшибка",

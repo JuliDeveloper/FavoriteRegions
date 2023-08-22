@@ -5,7 +5,6 @@ protocol RegionsListViewControllerProtocol: AnyObject {
     func updateRegions(_ regions: [Region])
     func startLoading()
     func stopLoading()
-    func stopRefreshing()
     func showErrorAlert()
 }
 

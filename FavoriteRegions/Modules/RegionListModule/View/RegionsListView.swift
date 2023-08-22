@@ -7,7 +7,6 @@ protocol RegionsListViewDelegate: AnyObject {
     func navigateDetailsViewController(_ region: Region, _  currentIndexPath: IndexPath?, _ isLike: Bool)
     func startActivityIndicator()
     func stopActivityIndicator()
-    func stopRefreshControl()
     func addLike(_ index: Int)
     func deleteLike(_ index: Int)
     func isLike(_ index: Int) -> Bool
@@ -22,12 +21,6 @@ final class RegionsListView: UIView {
         return indicator
     }()
     
-    private lazy var refreshControl: UIRefreshControl = {
-        let control = UIRefreshControl()
-        control.addTarget(self, action: #selector(refreshRegionsData), for: .valueChanged)
-        return control
-    }()
-    
     private lazy var collectionView: RegionCollectionView = {
         let layout = UICollectionViewFlowLayout()
         let view = RegionCollectionView(
@@ -35,7 +28,6 @@ final class RegionsListView: UIView {
         )
         view.regionListDelegate = self
         view.selectedRegionImageDelegate = nil
-        view.refreshControl = refreshControl
         return view
     }()
     
@@ -77,12 +69,6 @@ final class RegionsListView: UIView {
             collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
-    
-    @objc private func refreshRegionsData() {
-        delegate?.reloadFetchRegions()
-        reloadCollectionView()
-        activeIndicator.isHidden = true
-    }
 }
 
 extension RegionsListView: RegionsListViewDelegate {
@@ -109,10 +95,6 @@ extension RegionsListView: RegionsListViewDelegate {
     
     func stopActivityIndicator() {
         activeIndicator.stopAnimating()
-    }
-    
-    func stopRefreshControl() {
-        refreshControl.endRefreshing()
     }
     
     func addLike(_ index: Int) {
