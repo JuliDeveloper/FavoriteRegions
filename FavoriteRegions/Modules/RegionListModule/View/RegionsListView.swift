@@ -54,14 +54,14 @@ final class RegionsListView: UIView {
     }
     
     private func addElements() {
-        addSubview(activeIndicator)
         addSubview(collectionView)
+        collectionView.addSubview(activeIndicator)
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            activeIndicator.centerXAnchor.constraint(equalTo: centerXAnchor),
-            activeIndicator.centerYAnchor.constraint(equalTo: centerYAnchor),
+            activeIndicator.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
+            activeIndicator.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor),
             
             collectionView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
