@@ -4,7 +4,7 @@ final class LikeButton: UIButton {
     
     init() {
         super.init(frame: .zero)
-        setImage(UIImage(named: "noActiveIsLike"), for: .normal)
+        setImage(UIImage(named: Constants.LikeImages.noActiveIsLike), for: .normal)
         tintColor = .frGrayColor
         contentMode = .scaleAspectFit
     }
