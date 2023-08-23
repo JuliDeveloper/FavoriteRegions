@@ -56,19 +56,24 @@ final class RegionCollectionViewCell: UICollectionViewCell {
         }
     }
         
-    func configure(_ region: Region) {
-        regionTitleLabel.text = region.title
-        
-        likeButton.addTarget(
-            self,
-            action: #selector(changeIsLike),
-            for: .touchUpInside
-        )
-        
-        setImage(region.thumbUrls[0])
+    func configure(_ region: Region?) {
+        if region != nil {
+            regionTitleLabel.text = region?.title
+            
+            likeButton.addTarget(
+                self,
+                action: #selector(changeIsLike),
+                for: .touchUpInside
+            )
+            
+            if !(region?.thumbUrls.isEmpty ?? true) {
+                setImage(region?.thumbUrls[0] ?? "")
+            }
+        }
     }
     
-    func configure(_ image: String) {
+    func configure(_ image: String?) {
+        guard let image = image else { return }
         setImage(image)
     }
     
