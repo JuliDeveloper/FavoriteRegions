@@ -39,4 +39,9 @@ struct Constants {
         static let viewsStackSpacing: CGFloat = 5
         static let viewsLabelOpacity: CGFloat = 0.3
     }
+    
+    struct LikeImages {
+        static let activeIsLike = "activeIsLike"
+        static let noActiveIsLike = "noActiveIsLike"
+    }
 }

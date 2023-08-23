@@ -73,7 +73,7 @@ final class RegionCollectionViewCell: UICollectionViewCell {
     }
     
     func setLikeButtonState(isLiked: Bool) {
-        let imageName = isLiked ? "activeIsLike" : "noActiveIsLike"
+        let imageName = isLiked ? Constants.LikeImages.activeIsLike : Constants.LikeImages.noActiveIsLike
         likeButton.setImage(UIImage(named: imageName), for: .normal)
     }
 }
@@ -157,11 +157,11 @@ extension RegionCollectionViewCell {
             ),
             regionTitleLabel.topAnchor.constraint(
                 equalTo: regionTitleView.topAnchor,
-                constant: 5
+                constant: Constants.Constraints.cellConstraints
             ),
             regionTitleLabel.bottomAnchor.constraint(
                 equalTo: regionTitleView.bottomAnchor,
-                constant: -5
+                constant: -Constants.Constraints.cellConstraints
             )
         ])
     }

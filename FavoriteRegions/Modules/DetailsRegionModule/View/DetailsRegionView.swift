@@ -83,7 +83,7 @@ final class DetailsRegionView: UIView {
     }
     
     func setLikeButtonState(isLiked: Bool) {
-        let imageName = isLiked ? "activeIsLike" : "noActiveIsLike"
+        let imageName = isLiked ? Constants.LikeImages.activeIsLike : Constants.LikeImages.noActiveIsLike
         likeButton.setImage(UIImage(named: imageName), for: .normal)
     }
     
